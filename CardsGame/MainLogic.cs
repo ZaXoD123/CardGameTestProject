@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CardsGame
 {
@@ -34,36 +32,29 @@ namespace CardsGame
             {
                 // TODO сделать ситуативные методы ввода вывода. 
                 // Добавить вывод козыря (Deck.TrumpSuit) в консоль
-                UserInterface.Print($"Player {((step & 1) + 1)}, your turn. Cards in the deck: {myDeck.Remained()}");
-                
-                Console.ReadKey();
+
+                UserInterface.GameStepStart(((step & 1) + 1), myDeck.Remained());
                 
                 if (table.Count() > 0)
                 {
-                    Console.Clear();
-                    UserInterface.Print("Player " + ((step & 1) +1).ToString() + "Answer!");
-                    UserInterface.Print("On the table:");
-                    UserInterface.Print(table);
-                    Console.WriteLine();
-
+                    UserInterface.GameMessage(((step & 1) + 1), table);
+                    
                     players[step & 1].Show();
                     if (!players[step & 1].Answer(table))
                     {
                         continue;
                     }
                     table.Clear();
-                Console.ReadKey();
-                Console.Clear();  
+                    UserInterface.GameDelay();
                 }
                 
-                
-
                 players[step & 1].CatchFromDeck(myDeck);
                 players[(step +1) & 1].CatchFromDeck(myDeck);
-                UserInterface.Print("Player " + ((step & 1) + 1).ToString() + " attack!");
+
+                UserInterface.GameMessage(((step & 1) + 1), table, players[step & 1]);
                 players[step & 1].Punch(table,ref myDeck);
                 step++;
-                Console.Clear();
+                UserInterface.UIClear();
             }
             Console.ReadKey();
         }

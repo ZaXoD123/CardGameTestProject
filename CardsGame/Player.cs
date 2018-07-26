@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CardsGame
 {
@@ -38,8 +37,7 @@ namespace CardsGame
             List<Card> punchList = new List<Card>();
             int temp;
             
-            UserInterface.Print("Select card(s) to attack");
-            Show();
+            
             startIn:
             punchList.Clear();
             int.TryParse(UserInterface.Input(),out temp );
@@ -57,17 +55,11 @@ namespace CardsGame
             table.AddRange(punchList);
             
         }
-        //защита
-        public bool Answer(List<Card> table)
+        // Проверка способности побить
+        bool CanFight(List<Card> table)
         {
-
-            //TODO: Сделать отмену
-
-            // Проверка способности побить
-            // TODO: Вытянуть в отдельный метод. Старт
             List<Card> checkList = new List<Card>();
 
-            
             foreach (var i in table)
             {
                 bool temp = false;
@@ -87,17 +79,28 @@ namespace CardsGame
                     return false;
                 }
             }
-            // Стоп
+            return true;
+        }
+        //защита
+        public bool Answer(List<Card> table)
+        {
+            //TODO: Сделать отмену
+
+            //Проверка: Можно ли побить
+            if (!CanFight( table))
+            {
+                return false;
+            }
+            
             List<int> answerList = new List<int>();
             
-
             for (int i = 0; i < table.Count(); i++)
             {
                 UserInterface.Print($"Select a card to answer {table[i].Show()} or -1 to take");
 
                 int tempUserInput;
-
-                label:
+                //Ввод карт для ответа
+                StartInput:
                 int.TryParse(UserInterface.Input(), out tempUserInput);
                 if ((deckOfCards.Count() > tempUserInput) && (tempUserInput > -2))
                 {
@@ -113,23 +116,23 @@ namespace CardsGame
                         {
                             if (answerList.Contains(tempUserInput))
                             {
-                                UserInterface.Print($"This card has already been used. Select another");
-                                goto label;
+                                UserInterface.PrintFail(0);
+                                goto StartInput;
                             }
                             else
                                 answerList.Add(tempUserInput);
                         }
                         else
                         {
-                            UserInterface.Print($"This card does not hit  {table[i].Show()}. Select another");
-                            goto label;
+                            UserInterface.PrintFail(table[i]);
+                            goto StartInput;
                         }
                     }
                 }
                 else
                 {
-                    UserInterface.Print("Incorrect value. Select another");
-                    goto label;
+                    UserInterface.PrintFail(1);
+                    goto StartInput;
                 }
             }
             foreach (var i in answerList)
@@ -137,7 +140,6 @@ namespace CardsGame
                 Pop(i);
             }
             return true;
-
         }
 
         //если карты закончились у всех игроков кроме одного то true

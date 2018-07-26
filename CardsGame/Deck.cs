@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CardsGame 
 {
@@ -15,11 +11,11 @@ namespace CardsGame
         //Конструктор
         private Deck()
         {
-            for (Suits suit =  Suits.spades; suit <= Suits.diamonds; suit++)
+            for (int suit =  0; suit <= 3; suit++)
             {
-                for (Number num = Number.two; num <= Number.ace; num++)
+                for (int num = 2; num <= 14; num++)
                 {
-                    deckOfCards.Add(new Card(num,suit,false));
+                    deckOfCards.Add(new Card((Number) num, (Suits) suit ,false));
                 }
             }
             Shuffle();
@@ -41,6 +37,7 @@ namespace CardsGame
         }
 
         //Показать колоду
+        //TODO: Сделать через return
         public override void Show()
         {
             UserInterface.Print(deckOfCards);               
