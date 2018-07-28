@@ -1,14 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CardsGame 
 {
     class Deck : CardList
     {
         static public Deck singleTone = null;
-        static public Suits TrumpSuit { get; } /*= (Suits)0;*/ = (Suits)(new Random().Next(0, 3));
-        //List<Card> deckOfCards = new List<Card>(52);
+        static Suits trumpSuit;
+        static public Suits TrumpSuit
+        {
+            get
+            {
+                return trumpSuit;
+            }
+        }
         
         //Конструктор
+
         private Deck()
         {
             for (int suit =  0; suit <= 3; suit++)
@@ -19,7 +27,7 @@ namespace CardsGame
                 }
             }
             Shuffle();
-
+            trumpSuit = ShowLast().ShowSuit(); 
         }
 
         //SingleTone 
@@ -35,28 +43,13 @@ namespace CardsGame
                 return singleTone;
             }
         }
-
-        //Показать колоду
-        //TODO: Сделать через return
-        public override void Show()
+        
+        //Показать последнюю карту
+        public Card ShowLast()
         {
-            UserInterface.Print(deckOfCards);               
+            return deckOfCards[deckOfCards.Count - 1];
         }
-
-        public void Show(int index)
-        {
-            UserInterface.Print(deckOfCards[index]); 
-        }
-
-        public void Show(int indexStart, int indexStop)
-        {
-            for (int i = indexStart; i < indexStop; i++)
-            {
-                UserInterface.Print(deckOfCards[i]);
-            }
-        }
-
-
+        
         //Снять верхнюю карту
         public Card Pop()
         {
@@ -78,7 +71,5 @@ namespace CardsGame
                 }
             }
         }
-
-        //TODO: Перемешать
     }
 }

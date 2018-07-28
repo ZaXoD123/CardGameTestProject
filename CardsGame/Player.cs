@@ -7,6 +7,7 @@ namespace CardsGame
 {
     class Player : CardList
     {
+        #region Ввод и вывод руки
         //взять карту
         public void Catch(List<Card> newCards)
         {
@@ -26,24 +27,26 @@ namespace CardsGame
             }
         }
         //показать
-        public override void Show()
+        public void Show()
         {
-            UserInterface.Print("You have this cards:");
-            UserInterface.Print(deckOfCards);
+            deckOfCards.ShowPlayerHand();
         }
+        #endregion
+
+        #region Атака и защита
         //атака
         public void Punch(List<Card> table, ref Deck myDeck)
         {
             List<Card> punchList = new List<Card>();
-            int temp;
-            
-            
+
+
+
             startIn:
             punchList.Clear();
-            int.TryParse(UserInterface.Input(),out temp );
+            int temp = UserInterface.Input();
             if (!((temp >= 0) && (temp <= deckOfCards.Count() - 1)))
             {
-                UserInterface.Print("Incorrect value. Select another");
+                UserInterface.PrintFail(1);
                 goto startIn;
             }
             punchList.Add(Pop(temp));
@@ -53,55 +56,29 @@ namespace CardsGame
                 // и если да, то доложить
             }
             table.AddRange(punchList);
-            
-        }
-        // Проверка способности побить
-        bool CanFight(List<Card> table)
-        {
-            List<Card> checkList = new List<Card>();
 
-            foreach (var i in table)
-            {
-                bool temp = false;
-                foreach (var j in deckOfCards)
-                {
-                    if ((j.Fight(i)) && (!checkList.Contains(j)))
-                    {
-                        temp = true;
-                        checkList.Add(j);
-                    }
-                }
-                if (temp == false)
-                {
-                    UserInterface.Print("you can`t hit this card : " + i.Show() + ". You are taking!");
-                    Catch(table);
-                    table.Clear();
-                    return false;
-                }
-            }
-            return true;
         }
+
         //защита
         public bool Answer(List<Card> table)
         {
             //TODO: Сделать отмену
-
             //Проверка: Можно ли побить
-            if (!CanFight( table))
+            if (!CanFight(table))
             {
                 return false;
             }
-            
+
             List<int> answerList = new List<int>();
-            
+
             for (int i = 0; i < table.Count(); i++)
             {
-                UserInterface.Print($"Select a card to answer {table[i].Show()} or -1 to take");
+                UserInterface.PrintFail(table[i], 2);
 
-                int tempUserInput;
+
                 //Ввод карт для ответа
                 StartInput:
-                int.TryParse(UserInterface.Input(), out tempUserInput);
+                int tempUserInput = UserInterface.Input();
                 if ((deckOfCards.Count() > tempUserInput) && (tempUserInput > -2))
                 {
                     if (tempUserInput == -1)
@@ -124,7 +101,7 @@ namespace CardsGame
                         }
                         else
                         {
-                            UserInterface.PrintFail(table[i]);
+                            UserInterface.PrintFail(table[i], 0);
                             goto StartInput;
                         }
                     }
@@ -141,7 +118,35 @@ namespace CardsGame
             }
             return true;
         }
+        #endregion
 
+        #region Вспомогательные
+        // Проверка способности побить стол
+        bool CanFight(List<Card> table)
+        {
+            List<Card> checkList = new List<Card>();
+
+            foreach (var i in table)
+            {
+                bool temp = false;
+                foreach (var j in deckOfCards)
+                {
+                    if ((j.Fight(i)) && (!checkList.Contains(j)))
+                    {
+                        temp = true;
+                        checkList.Add(j);
+                    }
+                }
+                if (temp == false)
+                {
+                    UserInterface.PrintFail(i, 1);
+                    Catch(table);
+                    table.Clear();
+                    return false;
+                }
+            }
+            return true;
+        }
         //если карты закончились у всех игроков кроме одного то true
         public static bool GameOver(List<Player> players, Deck deck)
         {
@@ -156,5 +161,6 @@ namespace CardsGame
             }
             else return false;
         }
+        #endregion
     }
 }

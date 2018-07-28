@@ -12,7 +12,7 @@
             this.suit = suit;
         }
 
-        //Бьёт ли эта карта карту оппонента
+        //Бьёт ли эта карта другую карту
         public bool Fight(Card opponentCard)
         {
             if (suit == opponentCard.suit)
@@ -32,10 +32,19 @@
                 return false;
             }
         }
+        
         //Показать карту
         public string Show()
         {
             return $"{number} of {suit}";
+        }
+        public Suits ShowSuit()
+        {
+            return suit;
+        }
+        public Number ShowNumber()
+        {
+            return number;
         }
     }
 }
