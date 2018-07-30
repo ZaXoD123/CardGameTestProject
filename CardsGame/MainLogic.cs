@@ -33,9 +33,9 @@ namespace CardsGame
             while (!Player.GameOver(players, myDeck))
             {
                 //TODO:
-                //1. Сделать меньше связь с UserInterface
-                //2. Переписать логику для игроков. step & 1 Способна лишь на 2 значения.
-                //3. Доделать Player.Punch
+                //1. Сделать меньше связь с UserInterface [+-]
+                //2. Переписать логику для игроков. step & 1 Способна лишь на 2 значения. [-]
+                //3. Доделать Player.Punch [-]
                 ui.GameStepStart(((step & 1) + 1), myDeck.Remained());
                 
                 if (table.Count() > 0)

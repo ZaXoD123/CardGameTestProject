@@ -10,6 +10,7 @@ namespace CardsGame
     internal delegate void UICurrent<T>(T a);
     internal delegate void UICurrent<T, U>(T a, U b);
     internal delegate void UICurrent<T, U, K>(T a, U b, K c);
+    internal delegate int UICurrentInput();
 
     class UI
     {
@@ -22,6 +23,8 @@ namespace CardsGame
                 return sT;
             }
         }
+
+        public UICurrentInput Input { get; }
         public UICurrent GameDelay { get; }
         public UICurrent<List<Card>> ShowPlayerHand { get; }
         public UICurrent<int> PrintFail { get; }
@@ -34,6 +37,7 @@ namespace CardsGame
         {
             if (!gui)
             {
+                Input = new UICurrentInput(ConsoleUserInterface.Input);
                 GameDelay = new UICurrent(ConsoleUserInterface.GameDelay);
                 PrintFail = new UICurrent<int>(ConsoleUserInterface.PrintFail);
                 ShowPlayerHand = new UICurrent<List<Card>>(ConsoleUserInterface.ShowPlayerHand);

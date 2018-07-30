@@ -78,7 +78,7 @@ namespace CardsGame
 
                 //Ввод карт для ответа
                 StartInput:
-                int tempUserInput = ConsoleUserInterface.Input(); //
+                int tempUserInput = UI.ST.Input(); //
                 if ((deckOfCards.Count() > tempUserInput) && (tempUserInput > -2))
                 {
                     if (tempUserInput == -1)
