@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace CardsGame
 {
+
     //Класс обёртка для консольного  ui
 
-    static class UserInterface
+    static class ConsoleUserInterface
     {
         #region Вывод
         //вывод
@@ -82,7 +83,7 @@ namespace CardsGame
             }
         }
         //Фейлы конкретных ситуаций
-        public static void PrintFail(Card card, int Situation)
+        public static void MessageWithCard(Card card, int Situation)
         {
             switch (Situation)
             {

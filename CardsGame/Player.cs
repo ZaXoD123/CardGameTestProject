@@ -29,7 +29,7 @@ namespace CardsGame
         //показать
         public void Show()
         {
-            deckOfCards.ShowPlayerHand();
+            UI.ST.ShowPlayerHand(deckOfCards);
         }
         #endregion
 
@@ -43,10 +43,10 @@ namespace CardsGame
 
             startIn:
             punchList.Clear();
-            int temp = UserInterface.Input();
+            int temp = ConsoleUserInterface.Input();
             if (!((temp >= 0) && (temp <= deckOfCards.Count() - 1)))
             {
-                UserInterface.PrintFail(1);
+                UI.ST.PrintFail(1);
                 goto startIn;
             }
             punchList.Add(Pop(temp));
@@ -73,12 +73,12 @@ namespace CardsGame
 
             for (int i = 0; i < table.Count(); i++)
             {
-                UserInterface.PrintFail(table[i], 2);
+                UI.ST.MessageWithCard(table[i], 2);
 
 
                 //Ввод карт для ответа
                 StartInput:
-                int tempUserInput = UserInterface.Input();
+                int tempUserInput = ConsoleUserInterface.Input(); //
                 if ((deckOfCards.Count() > tempUserInput) && (tempUserInput > -2))
                 {
                     if (tempUserInput == -1)
@@ -93,7 +93,7 @@ namespace CardsGame
                         {
                             if (answerList.Contains(tempUserInput))
                             {
-                                UserInterface.PrintFail(0);
+                                UI.ST.PrintFail(0);
                                 goto StartInput;
                             }
                             else
@@ -101,14 +101,14 @@ namespace CardsGame
                         }
                         else
                         {
-                            UserInterface.PrintFail(table[i], 0);
+                            UI.ST.MessageWithCard(table[i], 0);
                             goto StartInput;
                         }
                     }
                 }
                 else
                 {
-                    UserInterface.PrintFail(1);
+                    UI.ST.PrintFail(1);
                     goto StartInput;
                 }
             }
@@ -139,7 +139,7 @@ namespace CardsGame
                 }
                 if (temp == false)
                 {
-                    UserInterface.PrintFail(i, 1);
+                    UI.ST.MessageWithCard(i, 1);
                     Catch(table);
                     table.Clear();
                     return false;

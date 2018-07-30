@@ -6,6 +6,8 @@ namespace CardsGame
 {
     class MainLogic
     {
+        
+
         static void Main(string[] args)
         {
             //колода myDeck, стол table и константа количества игроков countOfPlayers
@@ -13,7 +15,6 @@ namespace CardsGame
             const int countOfPlayers = 2;
             Deck myDeck = Deck.AddChild();
             List<Card> table = new List<Card>();
-            
 
             //Создание игроков
             List<Player> players = new List<Player>();
@@ -22,6 +23,12 @@ namespace CardsGame
                 players.Add(new Player());
                 players[i].CatchFromDeck(myDeck);
             }
+
+            // Определение интерфейса
+            const bool gui = false;
+            UI ui = UI.AddChild(gui);
+
+            
             
             while (!Player.GameOver(players, myDeck))
             {
@@ -29,11 +36,11 @@ namespace CardsGame
                 //1. Сделать меньше связь с UserInterface
                 //2. Переписать логику для игроков. step & 1 Способна лишь на 2 значения.
                 //3. Доделать Player.Punch
-                UserInterface.GameStepStart(((step & 1) + 1), myDeck.Remained());
+                ui.GameStepStart(((step & 1) + 1), myDeck.Remained());
                 
                 if (table.Count() > 0)
                 {
-                    UserInterface.GameMessage(((step & 1) + 1), table);
+                    ui.GameMessage(((step & 1) + 1), table);
                     
                     players[step & 1].Show();
                     if (!players[step & 1].Answer(table))
@@ -41,13 +48,13 @@ namespace CardsGame
                         continue;
                     }
                     table.Clear();
-                    UserInterface.GameDelay();
+                    ui.GameDelay();
                 }
                 
                 players[step & 1].CatchFromDeck(myDeck);
                 players[(step +1) & 1].CatchFromDeck(myDeck);
 
-                UserInterface.GameMessage(((step & 1) + 1), table, players[step & 1]);
+                ui.GameMessageAttack(((step & 1) + 1), table, players[step & 1]);
                 players[step & 1].Punch(table,ref myDeck);
                 step++;
                 
