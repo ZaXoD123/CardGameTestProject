@@ -1,34 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace CardsGame 
+namespace CardsGame
 {
-    class Deck : CardList
+    internal class Deck : CardList
     {
-        static public Deck singleTone = null;
-        static Suits trumpSuit;
-        static public Suits TrumpSuit
-        {
-            get
-            {
-                return trumpSuit;
-            }
-        }
-        
+        public static Deck singleTone;
+
         //Конструктор
 
         private Deck()
         {
-            for (int suit =  0; suit <= 3; suit++)
-            {
-                for (int num = 2; num <= 14; num++)
-                {
-                    deckOfCards.Add(new Card((Number) num, (Suits) suit ,false));
-                }
-            }
+            for (var suit = 0; suit <= 3; suit++)
+            for (var num = 2; num <= 14; num++)
+                deckOfCards.Add(new Card((Number) num, (Suits) suit, false));
             Shuffle();
-            trumpSuit = ShowLast().ShowSuit(); 
+            TrumpSuit = ShowLast().ShowSuit();
         }
+
+        public static Suits TrumpSuit { get; private set; }
 
         //SingleTone 
         public static Deck AddChild()
@@ -38,37 +27,32 @@ namespace CardsGame
                 singleTone = new Deck();
                 return singleTone;
             }
-            else
-            {
-                return singleTone;
-            }
+
+            return singleTone;
         }
-        
+
         //Показать последнюю карту
         public Card ShowLast()
         {
             return deckOfCards[deckOfCards.Count - 1];
         }
-        
+
         //Снять верхнюю карту
         public Card Pop()
         {
             return base.Pop(0);
         }
-        
+
         //Перемешать
         public void Shuffle()
         {
-            for (int j = 0; j < deckOfCards.Count/2; j++)
+            for (var j = 0; j < deckOfCards.Count / 2; j++)
+            for (var i = 0; i < deckOfCards.Count; i++)
             {
-                for (int i = 0; i < deckOfCards.Count; i++)
-                {
-                    int tempRandom = new Random().Next(i, deckOfCards.Count);
-                    Card tempCard = deckOfCards[i];
-                    deckOfCards[i] = deckOfCards[tempRandom];
-                    deckOfCards[tempRandom]  = tempCard;
-
-                }
+                var tempRandom = new Random().Next(i, deckOfCards.Count);
+                var tempCard = deckOfCards[i];
+                deckOfCards[i] = deckOfCards[tempRandom];
+                deckOfCards[tempRandom] = tempCard;
             }
         }
     }

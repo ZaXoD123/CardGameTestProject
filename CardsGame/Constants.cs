@@ -1,18 +1,18 @@
 ﻿namespace CardsGame
 {
     //масть
-    enum Suits
+    internal enum Suits
     {
-        spades,     //пики
-        clubs,      //трефы
-        hearts,     //черви
-        diamonds    //бубны
+        spades, //пики
+        clubs, //трефы
+        hearts, //черви
+        diamonds //бубны
     }
 
     //значение
-    enum Number
+    internal enum Number
     {
-        two=2,
+        two = 2,
         three,
         four,
         five,

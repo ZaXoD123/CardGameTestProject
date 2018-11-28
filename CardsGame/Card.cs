@@ -1,10 +1,10 @@
 ﻿namespace CardsGame
 {
-    struct Card
+    internal struct Card
     {
-        Number number;
-        Suits suit;
-        
+        private readonly Number number;
+        private readonly Suits suit;
+
 
         public Card(Number number, Suits suit, bool isTrump)
         {
@@ -17,31 +17,26 @@
         {
             if (suit == opponentCard.suit)
             {
-                if (number > opponentCard.number)
-                {
-                    return true;
-                }
+                if (number > opponentCard.number) return true;
                 return false;
             }
-            else if ((Deck.TrumpSuit==suit) && (Deck.TrumpSuit!=opponentCard.suit))
-            {
+
+            if (Deck.TrumpSuit == suit && Deck.TrumpSuit != opponentCard.suit)
                 return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
-        
+
         //Показать карту
         public string Show()
         {
             return $"{number} of {suit}";
         }
+
         public Suits ShowSuit()
         {
             return suit;
         }
+
         public Number ShowNumber()
         {
             return number;

@@ -1,28 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CardsGame
 {
     internal delegate void UICurrent();
+
     internal delegate void UICurrent<T>(T a);
+
     internal delegate void UICurrent<T, U>(T a, U b);
+
     internal delegate void UICurrent<T, U, K>(T a, U b, K c);
+
     internal delegate int UICurrentInput();
 
-    class UI
+    internal class UI
     {
-        static UI sT = null;
-
-        static public UI ST
+        private UI(bool gui)
         {
-            get
+            if (!gui)
             {
-                return sT;
+                Input = ConsoleUserInterface.Input;
+                GameDelay = ConsoleUserInterface.GameDelay;
+                PrintFail = ConsoleUserInterface.PrintFail;
+                ShowPlayerHand = ConsoleUserInterface.ShowPlayerHand;
+                GameStepStart = ConsoleUserInterface.GameStepStart;
+                GameMessage = ConsoleUserInterface.GameMessage;
+                MessageWithCard = ConsoleUserInterface.MessageWithCard;
+                GameMessageAttack = ConsoleUserInterface.GameMessage;
             }
+
+            /*
+             else
+             {
+                gui
+             }
+            */
         }
+
+        public static UI ST { get; private set; }
 
         public UICurrentInput Input { get; }
         public UICurrent GameDelay { get; }
@@ -32,33 +46,16 @@ namespace CardsGame
         public UICurrent<int, List<Card>> GameMessage { get; }
         public UICurrent<Card, int> MessageWithCard { get; }
         public UICurrent<int, List<Card>, Player> GameMessageAttack { get; }
-        
-        UI(bool gui)
-        {
-            if (!gui)
-            {
-                Input = new UICurrentInput(ConsoleUserInterface.Input);
-                GameDelay = new UICurrent(ConsoleUserInterface.GameDelay);
-                PrintFail = new UICurrent<int>(ConsoleUserInterface.PrintFail);
-                ShowPlayerHand = new UICurrent<List<Card>>(ConsoleUserInterface.ShowPlayerHand);
-                GameStepStart = new UICurrent<int, int>(ConsoleUserInterface.GameStepStart);
-                GameMessage = new UICurrent<int, List<Card>>(ConsoleUserInterface.GameMessage);
-                MessageWithCard = new UICurrent<Card, int>(ConsoleUserInterface.MessageWithCard);
-                GameMessageAttack = new UICurrent<int, List<Card>, Player>(ConsoleUserInterface.GameMessage);
-            }
-        }
+
         public static UI AddChild(bool gui)
         {
-            if (sT == null)
+            if (ST == null)
             {
-                sT = new UI(gui);
-                return sT;
+                ST = new UI(gui);
+                return ST;
             }
-            else
-            {
-                return sT;
-            }
-        }
 
+            return ST;
+        }
     }
 }

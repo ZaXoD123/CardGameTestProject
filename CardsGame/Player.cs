@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
 
 namespace CardsGame
 {
-    class Player : CardList
+    internal class Player : CardList
     {
         #region Ввод и вывод руки
+
         //взять карту
         public void Catch(List<Card> newCards)
         {
             deckOfCards.AddRange(newCards);
         }
+
         public void Catch(Card a)
         {
             deckOfCards.Add(a);
@@ -21,42 +21,41 @@ namespace CardsGame
         //заполнить руку из колоды
         public void CatchFromDeck(Deck deck)
         {
-            while ((deckOfCards.Count < 6) && (deck.Remained() > 0))
-            {
-                Catch(deck.Pop());
-            }
+            while (deckOfCards.Count < 6 && deck.Remained() > 0) Catch(deck.Pop());
         }
+
         //показать
         public void Show()
         {
             UI.ST.ShowPlayerHand(deckOfCards);
         }
+
         #endregion
 
         #region Атака и защита
+
         //атака
         public void Punch(List<Card> table, ref Deck myDeck)
         {
-            List<Card> punchList = new List<Card>();
-
+            var punchList = new List<Card>();
 
 
             startIn:
             punchList.Clear();
-            int temp = ConsoleUserInterface.Input();
-            if (!((temp >= 0) && (temp <= deckOfCards.Count() - 1)))
+            var temp = ConsoleUserInterface.Input();
+            if (!(temp >= 0 && temp <= deckOfCards.Count() - 1))
             {
                 UI.ST.PrintFail(1);
                 goto startIn;
             }
+
             punchList.Add(Pop(temp));
             if (deckOfCards.Contains(punchList[punchList.Count() - 1]))
             {
-                // TODO спросить хочет ли игрок положить ещё одну карту
-                // и если да, то доложить
+                // TODO: Спросить хочет ли игрок положить ещё одну карту и если да, то доложить из руки
             }
-            table.AddRange(punchList);
 
+            table.AddRange(punchList);
         }
 
         //защита
@@ -64,22 +63,19 @@ namespace CardsGame
         {
             //TODO: Сделать отмену
             //Проверка: Можно ли побить
-            if (!CanFight(table))
-            {
-                return false;
-            }
+            if (!CanFight(table)) return false;
 
-            List<int> answerList = new List<int>();
+            var answerList = new List<int>();
 
-            for (int i = 0; i < table.Count(); i++)
+            for (var i = 0; i < table.Count(); i++)
             {
                 UI.ST.MessageWithCard(table[i], 2);
 
 
                 //Ввод карт для ответа
                 StartInput:
-                int tempUserInput = UI.ST.Input(); //
-                if ((deckOfCards.Count() > tempUserInput) && (tempUserInput > -2))
+                var tempUserInput = UI.ST.Input(); //
+                if (deckOfCards.Count() > tempUserInput && tempUserInput > -2)
                 {
                     if (tempUserInput == -1)
                     {
@@ -87,23 +83,21 @@ namespace CardsGame
                         table.Clear();
                         return false;
                     }
-                    else
+
+                    if (deckOfCards[tempUserInput].Fight(table[i]))
                     {
-                        if (deckOfCards[tempUserInput].Fight(table[i]))
+                        if (answerList.Contains(tempUserInput))
                         {
-                            if (answerList.Contains(tempUserInput))
-                            {
-                                UI.ST.PrintFail(0);
-                                goto StartInput;
-                            }
-                            else
-                                answerList.Add(tempUserInput);
-                        }
-                        else
-                        {
-                            UI.ST.MessageWithCard(table[i], 0);
+                            UI.ST.PrintFail(0);
                             goto StartInput;
                         }
+
+                        answerList.Add(tempUserInput);
+                    }
+                    else
+                    {
+                        UI.ST.MessageWithCard(table[i], 0);
+                        goto StartInput;
                     }
                 }
                 else
@@ -112,31 +106,30 @@ namespace CardsGame
                     goto StartInput;
                 }
             }
-            foreach (var i in answerList)
-            {
-                Pop(i);
-            }
+
+            foreach (var i in answerList) Pop(i);
             return true;
         }
+
         #endregion
 
         #region Вспомогательные
+
         // Проверка способности побить стол
-        bool CanFight(List<Card> table)
+        private bool CanFight(List<Card> table)
         {
-            List<Card> checkList = new List<Card>();
+            var checkList = new List<Card>();
 
             foreach (var i in table)
             {
-                bool temp = false;
+                var temp = false;
                 foreach (var j in deckOfCards)
-                {
-                    if ((j.Fight(i)) && (!checkList.Contains(j)))
+                    if (j.Fight(i) && !checkList.Contains(j))
                     {
                         temp = true;
                         checkList.Add(j);
                     }
-                }
+
                 if (temp == false)
                 {
                     UI.ST.MessageWithCard(i, 1);
@@ -145,22 +138,22 @@ namespace CardsGame
                     return false;
                 }
             }
+
             return true;
         }
+
         //если карты закончились у всех игроков кроме одного то true
         public static bool GameOver(List<Player> players, Deck deck)
         {
-            int temp = 0;
-            foreach (Player i in players)
-            {
-                if (i.Remained() == 0) temp++;
-            }
-            if ((temp == players.Count - 1) && (deck.Remained() == 0))
-            {
+            var temp = 0;
+            foreach (var i in players)
+                if (i.Remained() == 0)
+                    temp++;
+            if (temp == players.Count - 1 && deck.Remained() == 0)
                 return true;
-            }
-            else return false;
+            return false;
         }
+
         #endregion
     }
 }
